@@ -26,7 +26,32 @@ class CreateProductService {
   ) {}
 
   public async execute({ customer_id, products }: IRequest): Promise<Order> {
-    // TODO
+    const customer = await this.customersRepository.findById(customer_id);
+
+    if (!customer) {
+      throw new AppError('Customer not found.');
+    }
+
+    const findProducts = await this.productsRepository.findAllById(products);
+    products.map(product => {
+      if (
+        !findProducts.some(findedProducts => findedProducts.id === product.id)
+      ) {
+        throw new AppError(`${product.id} is not present in database.`);
+      }
+      findProducts.map(findedProducts => {
+        if (
+          findedProducts.id === product.id &&
+          product.quantity > findedProducts.quantity
+        ) {
+          throw new AppError(`Insuficient quantity for product ${product.id}`);
+        }
+        return null;
+      });
+      return null;
+    });
+
+    const order = await this.ordersRepository.create({ customer, products });
   }
 }
 
