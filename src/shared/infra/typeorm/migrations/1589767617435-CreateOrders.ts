@@ -19,10 +19,6 @@ export default class CreateOrders1589767617435 implements MigrationInterface {
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'customer',
-            type: 'varchar',
-          },
-          {
             name: 'customer_id',
             type: 'uuid',
           },
@@ -54,7 +50,7 @@ export default class CreateOrders1589767617435 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey('orders', 'orderCustomer');
+    await queryRunner.dropForeignKey('orders', 'OrderCustomer');
 
     await queryRunner.dropTable('orders');
   }
